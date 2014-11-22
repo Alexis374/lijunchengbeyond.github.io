@@ -1,0 +1,340 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>djano model | ljcbeyond&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="ljcbeyond">
+    
+    <meta name="description" content="django models
+
+
+null database-related bland validation-related
+choices: like this ((stored in db,display),(stored in db,display))  p.shirt_size =&amp;quot">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="ljcbeyond&#39;s blog" title="ljcbeyond&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="ljcbeyond&#39;s blog">ljcbeyond&#39;s blog</a></h1>
+				<h2 class="blog-motto">All about Programming!</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/11/22/djano-model/" title="djano model" itemprop="url">djano model</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="ljcbeyond">ljcbeyond</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-11-22T12:56:03.000Z" itemprop="datePublished">11月 22 2014</time>
+    更新日期:<time datetime="2014-11-22T13:00:42.000Z" itemprop="dateModified">11月 22 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#django_models"><span class="toc-number">1.</span> <span class="toc-text">django models</span></a></li></ol>
+		</div>
+		
+		<h2 id="django_models">django models</h2>
+<hr>
+<ul>
+<li>null <strong>database-related</strong> bland <strong>validation-related</strong></li>
+<li>choices: like this <strong>((stored in db,display),(stored in db,display))</strong><br>  <code>p.shirt_size =&quot;L&quot;</code><br>  <code>p.get_shirt_size_display() ===&gt; u&#39;Large&#39;</code></li>
+<li>help_text default unique=True</li>
+<li>many to many field  extra fields: with <strong>through</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span><span class="params">(models.Model)</span>:</span></div><div class="line">    name = models.CharField(max_length=<span class="number">40</span>)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Group</span><span class="params">(models.Model)</span>:</span></div><div class="line">    name = models.CharField(max_length=<span class="number">40</span>)</div><div class="line">    members=models.ManyToManyField(Person,through=<span class="string">'Membership'</span>)</div><div class="line"><span class="comment">#通过交叉表</span></div><div class="line"><span class="comment">#增加一个交叉表，增加额外信息</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Membership</span><span class="params">(models.Model)</span>:</span></div><div class="line">    person = models.ForeignKey(Person)</div><div class="line">    group = models.ForeignKey(Group)</div><div class="line">    date_joined = models.DateField()</div><div class="line">    invite_reason = models.CharField(max_length=<span class="number">40</span>)</div></pre></td></tr></table></figure>
+
+<ul>
+<li>with intermediate model,the <code>create</code>,<code>add</code>,<code>remove</code> method don’t work,but the <code>clear</code> method work </li>
+<li>query:</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Person.objects.filter(group__name=’The Beatles’,membership__date_joined__gt=date(<span class="number">1961</span>,<span class="number">1</span>,<span class="number">1</span>))</div></pre></td></tr></table></figure>
+
+<p>注意 <code>filter</code>可以添加非本类的属性作为条件，如上的<code>group__name</code></p>
+<ul>
+<li>model method <code>get_absolute_url()</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_absolute_url</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">from</span> django.core.urlresolvers <span class="keyword">import</span> reverse</div><div class="line">    <span class="keyword">return</span> reverse(<span class="string">'people.views.details'</span>, args=[str(self.id)])</div></pre></td></tr></table></figure>
+
+<p>in template:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">""</span>&gt;</span><span class="tag">&lt;/<span class="title">a</span>&gt;</span></div></pre></td></tr></table></figure>
+
+<ul>
+<li>自定义 save方法：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">save</span><span class="params">(self,*args,**kwargs)</span>:</span></div><div class="line">    do_something()</div><div class="line">    Super(Blog,self).save(*args,**kwargs)</div><div class="line">    do_sth_else()</div></pre></td></tr></table></figure>
+
+<ul>
+<li>QuerySet 的delete方法一次删除多个对象，调用的是<code>delete * from xxx where 条件</code>,若自己实现了delete，就必须遍历QuerySet，对每个对象调用自定义的<code>delete()</code></li>
+<li><a href="http://www.cnblogs.com/linxiyue/p/3900264.html" target="_blank" rel="external">django model blogs in chinese</a></li>
+<li>foreign key:<code>entry.blog = cheese_blog</code>,<br>   m2m<code>entry.authors.add(john, paul, george, ringo)</code>（一次添加多个）</li>
+<li>跨关系查询 <code>Blog.objects.filter(entry__authors__name=&#39;Lennon&#39;)</code> Blog是一 Entry是多</li>
+<li><a href="http://www.cnblogs.com/linxiyue/p/3905589.html" target="_blank" rel="external">django model making query</a></li>
+<li></li>
+<li><a href="http://www.cnblogs.com/linxiyue/p/3906179.html" target="_blank" rel="external">django aggregations</a></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">Book.objects.all().aggregate(Avg(<span class="string">'price'</span>))</div><div class="line"><span class="comment">#返回{'price__avg': 34.35}</span></div><div class="line"><span class="keyword">from</span> django.db.models <span class="keyword">import</span> Max</div><div class="line">Book.objects.all().aggregate(Max(<span class="string">'price'</span>)</div><div class="line"><span class="comment">#{'price__max': Decimal('81.20')}</span></div><div class="line"><span class="comment">#上述方法是为整个QuerySet生成聚合值，用aggregate()函数</span></div><div class="line"></div><div class="line"><span class="comment">#另一种为QuerySet的每个对象添加属性：用annotate()函数</span></div><div class="line">pubs = Publisher.objects.annotate(num_books=Count(<span class="string">'book'</span>))<span class="comment">#指定属性名称为num_books，否则默认为book_count</span></div><div class="line"><span class="prompt">&gt;&gt;&gt; </span>pubs</div><div class="line">[&lt;Publisher BaloneyPress&gt;, &lt;Publisher SalamiPress&gt;, ...]</div><div class="line"><span class="prompt">&gt;&gt;&gt; </span>pubs[<span class="number">0</span>].num_books</div><div class="line"><span class="number">73</span></div><div class="line">pubs = Publisher.objects.annotate(num_books=Count(<span class="string">'book'</span>)).order_by(<span class="string">'-num_books'</span>)[:<span class="number">5</span>]<span class="comment">#根据发行书数量多少降序排列。num_books已成为QuerySet的属性</span></div><div class="line"></div><div class="line"><span class="prompt">&gt;&gt;&gt; </span>Book.objects.aggregate(Avg(<span class="string">'price'</span>), Max(<span class="string">'price'</span>), Min(<span class="string">'price'</span>))<span class="comment">#生成多个聚合，返回多个键的字典</span></div><div class="line">{<span class="string">'price__avg'</span>: <span class="number">34.35</span>, <span class="string">'price__max'</span>: Decimal(<span class="string">'81.20'</span>), <span class="string">'price__min'</span>: Decimal(<span class="string">'12.99'</span>)}</div><div class="line"></div><div class="line">联合聚合（跨表查询field）</div><div class="line"><span class="prompt">&gt;&gt;&gt; </span>Store.objects.aggregate(youngest_age=Min(<span class="string">'books__authors__age'</span>))<span class="comment">#书店里最小作者的年龄。store里有book，book里有authors，author有age</span></div><div class="line">反向聚合</div><div class="line"><span class="prompt">&gt;&gt;&gt; </span>Author.objects.aggregate(average_rating=Avg(<span class="string">'book__rating'</span>))</div><div class="line"><span class="comment">#书有作者rating，通过作者查询书的得分的平均值</span></div></pre></td></tr></table></figure>
+
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/django/">django</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2014/11/22/djano-model/" data-title="djano model | ljcbeyond&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2014/11/22/aboutme/"  title="about me">
+ <strong>NEXT:</strong><br/> 
+ <span>about me
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#django_models"><span class="toc-number">1.</span> <span class="toc-text">django models</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/about-me/" title="about me">about me<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://yoursite.com" target="_blank" title="ljcbeyond">ljcbeyond</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+  </body>
+</html>
