@@ -1,0 +1,312 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>python regular expression(1) | ljcbeyond&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="ljcbeyond">
+    
+    <meta name="description" content="python regular expression(1)
+
+
+1234import rematch = re.search(pattern,text)#pattern 为模式，可以是纯文本，也可以是符合正则表达式语法的string，返回 match对象s = match.start()e = mat">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="ljcbeyond&#39;s blog" title="ljcbeyond&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="ljcbeyond&#39;s blog">ljcbeyond&#39;s blog</a></h1>
+				<h2 class="blog-motto">All about Programming!</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/12/09/python-regular-expression/" title="python regular expression(1)" itemprop="url">python regular expression(1)</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="ljcbeyond">ljcbeyond</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-12-08T17:20:51.000Z" itemprop="datePublished">12月 9 2014</time>
+    更新日期:<time datetime="2014-12-08T17:20:51.000Z" itemprop="dateModified">12月 9 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#python_regular_expression(1)"><span class="toc-number">1.</span> <span class="toc-text">python regular expression(1)</span></a></li></ol>
+		</div>
+		
+		<h2 id="python_regular_expression(1)">python regular expression(1)</h2>
+<hr>
+<ul>
+<li><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> re</div><div class="line">match = re.search(pattern,text)<span class="comment">#pattern 为模式，可以是纯文本，也可以是符合正则表达式语法的string，返回 match对象</span></div><div class="line">s = match.start()</div><div class="line">e = match.end()</div></pre></td></tr></table></figure>
+</li>
+<li><p>编译 <code>pattern = re.compile(r&#39;ab+&#39;)</code></p>
+</li>
+<li>多重匹配：<code>re.search</code>查找单个实例，<code>re.findall(pattern,text)</code>返回所有匹配字串的列表，<code>re.finditer(p,t)</code>返回迭代器</li>
+<li>模式重复：<code>* + ? {m,n}</code>，表示用在这些字符前面的字符重复的次数。如<code>ab</code> 可以匹配<code>ab?(表示b可以出现一次或者不出现，自然就匹配a了)</code>默认情况下是贪心匹配，在重复指令后加<code>?</code>关闭贪心。<code>ab??</code>表示在可以出现0次或1次b时匹配0次b,同理<code>ab*?</code>也一样</li>
+<li>字符集 <code>[ab]</code>表示a或b都可以匹配。<code>[^]</code>用来排除不在字符集内的字符，如<code>[^-. ]</code>表示不是<code>-</code>或<code>.</code>或空格的字符。还有常见的<code>[a-z]</code> <code>[A-Z]</code> <code>[a-zA-Z]</code>的用法</li>
+<li>关于贪婪模式的理解：<code>a.*b</code>在字符串中，从左边找<code>a</code>，从右边找<code>b</code>，然后加上中间的所有字串都是匹配结果;非贪婪模式中<code>a.*?b</code>（注意这个?放在表示次数的符号如<code>+ * ?</code>后面或字串的最后，表示非贪婪），从左边寻找a，紧接着向右找到第一个b，连带上中间的所有，即为匹配结果.所以<code>re.findall(r&#39;a.*?b&#39;,&#39;abbaabbba&#39;)</code> 会返回<code>[&#39;ab&#39;, &#39;aab&#39;]</code></li>
+<li>转义 <code>\d \D \s \S \w(表示字母和数字) \W(非字母数字)</code></li>
+<li>锚定 <code>\A(字符串开始) \Z ^（字符串开始或行开始） $（字符串结束或行结束）</code></li>
+<li><code>\b（单词开头或结尾）\B(不在单词的开头或结尾) （表示前面的一个字符是开始或结束 如 t\b表示以t结束）</code><br><code>\bt表示以t开头的单词</code></li>
+<li><code>re.match</code>只匹配开头，若不成功则返回空值，<code>re.search</code>可以匹配中间的，但只匹配单个实例</li>
+<li>用group解析匹配：小括号分组， 访问单个组匹配的字串，用 <code>match</code>对象的<code>groups()</code>方法，有几个括号则该方法就返回有几个元素的tuple，分别对应该括号里匹配的字符串.命名组：在常规的正则表达式中加入<code>?P&lt;name&gt;</code>如 </li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">text = <span class="string">'This is some text -- with punctuation'</span></div><div class="line">pattern = re.compile(<span class="string">r'(\bt\w+)\W+(\w+)'</span>)<span class="comment">#t开头单词，中间有非单词元素，再以单词结尾</span></div><div class="line">match = pattern.search(text)</div><div class="line">match.groups()<span class="comment">##返回('text', 'with')</span></div><div class="line"><span class="comment">#～～～～～～～～～～～～～～～～～～～～～</span></div><div class="line">match.group(<span class="number">0</span>)<span class="comment"># 或 match.group() 返回整个re匹配的字串'text -- with'</span></div><div class="line">match.group(<span class="number">1</span>)<span class="comment">#  'text'</span></div><div class="line">match.group(<span class="number">2</span>) <span class="comment">#  'with'</span></div><div class="line">pattern = re.compile(<span class="string">r'(?P&lt;fuck&gt;\bt\w+)\W+(?P&lt;suck&gt;\w+)'</span>)</div><div class="line">mat = pattern.search(text)</div><div class="line">mat.groupdict() <span class="comment">##{'fuck': 'text', 'suck': 'with'}返回带组名的字典</span></div><div class="line"><span class="comment">#～～～～～分组嵌套～～～～～～～～～～～～～～～～～～</span></div></pre></td></tr></table></figure>
+
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2014/12/09/python-regular-expression/" data-title="python regular expression(1) | ljcbeyond&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2014/11/22/djano-model/"  title="djano model">
+ <strong>NEXT:</strong><br/> 
+ <span>djano model
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#python_regular_expression(1)"><span class="toc-number">1.</span> <span class="toc-text">python regular expression(1)</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/about-me/" title="about me">about me<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://yoursite.com" target="_blank" title="ljcbeyond">ljcbeyond</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+  </body>
+</html>
