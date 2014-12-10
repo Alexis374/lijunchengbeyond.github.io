@@ -4,15 +4,12 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>python regular expression(1) | ljcbeyond&#39;s blog</title>
+    <title>django save a model when it&#39;s needed | ljcbeyond&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="ljcbeyond">
     
-    <meta name="description" content="python regular expression(1)
-
-
-1234import rematch = re.search(pattern,text)#pattern 为模式，可以是纯文本，也可以是符合正则表达式语法的string，返回 match对象s = match.start()e = mat">
+    <meta name="description" content="标题可能起得晦涩难懂，但是我在开发的时候遇到这样一个场景：model字段里有个字段保存的是一张图片的url，在model被保存，也就是一条记录被创建或修改时去下载该图片，并保存。下载图片这个过程相对就比较漫长了。所以为了节约时间、流量，需要在该字段更新的时候下载图片，而在该字段没有变化的时候不去下载">
     
     
     
@@ -69,15 +66,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/12/09/python-regular-expression/" title="python regular expression(1)" itemprop="url">python regular expression(1)</a>
+      <a href="/2014/12/11/django-save-a-when-it-s-needed/" title="django save a model when it&#39;s needed" itemprop="url">django save a model when it&#39;s needed</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://yoursite.com" title="ljcbeyond">ljcbeyond</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-12-08T17:20:51.000Z" itemprop="datePublished">12月 9 2014</time>
-    更新日期:<time datetime="2014-12-08T17:20:51.000Z" itemprop="dateModified">12月 9 2014</time>
+    <time datetime="2014-12-10T17:39:56.000Z" itemprop="datePublished">12月 11 2014</time>
+    更新日期:<time datetime="2014-12-10T18:05:41.000Z" itemprop="dateModified">12月 11 2014</time>
     
   </p>
 </header>
@@ -86,38 +83,28 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#python_regular_expression(1)"><span class="toc-number">1.</span> <span class="toc-text">python regular expression(1)</span></a></li></ol>
+		
 		</div>
 		
-		<h2 id="python_regular_expression(1)">python regular expression(1)</h2>
-<hr>
-<ul>
-<li><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> re</div><div class="line">match = re.search(pattern,text)<span class="comment">#pattern 为模式，可以是纯文本，也可以是符合正则表达式语法的string，返回 match对象</span></div><div class="line">s = match.start()</div><div class="line">e = match.end()</div></pre></td></tr></table></figure>
-</li>
-<li><p>编译 <code>pattern = re.compile(r&#39;ab+&#39;)</code></p>
-</li>
-<li>多重匹配：<code>re.search</code>查找单个实例，<code>re.findall(pattern,text)</code>返回所有匹配字串的列表，<code>re.finditer(p,t)</code>返回迭代器</li>
-<li>模式重复：<code>* + ? {m,n}</code>，表示用在这些字符前面的字符重复的次数。如<code>ab</code> 可以匹配<code>ab?(表示b可以出现一次或者不出现，自然就匹配a了)</code>默认情况下是贪心匹配，在重复指令后加<code>?</code>关闭贪心。<code>ab??</code>表示在可以出现0次或1次b时匹配0次b,同理<code>ab*?</code>也一样</li>
-<li>字符集 <code>[ab]</code>表示a或b都可以匹配。<code>[^]</code>用来排除不在字符集内的字符，如<code>[^-. ]</code>表示不是<code>-</code>或<code>.</code>或空格的字符。还有常见的<code>[a-z]</code> <code>[A-Z]</code> <code>[a-zA-Z]</code>的用法</li>
-<li>关于贪婪模式的理解：<code>a.*b</code>在字符串中，从左边找<code>a</code>，从右边找<code>b</code>，然后加上中间的所有字串都是匹配结果;非贪婪模式中<code>a.*?b</code>（注意这个?放在表示次数的符号如<code>+ * ?</code>后面或字串的最后，表示非贪婪），从左边寻找a，紧接着向右找到第一个b，连带上中间的所有，即为匹配结果.所以<code>re.findall(r&#39;a.*?b&#39;,&#39;abbaabbba&#39;)</code> 会返回<code>[&#39;ab&#39;, &#39;aab&#39;]</code></li>
-<li>转义 <code>\d \D \s \S \w(表示字母和数字) \W(非字母数字)</code></li>
-<li>锚定 <code>\A(字符串开始) \Z ^（字符串开始或行开始） $（字符串结束或行结束）</code></li>
-<li><code>\b（单词开头或结尾）\B(不在单词的开头或结尾) （表示前面的一个字符是开始或结束 如 t\b表示以t结束）</code><br><code>\bt表示以t开头的单词</code></li>
-<li><code>re.match</code>只匹配开头，若不成功则返回空值，<code>re.search</code>可以匹配中间的，但只匹配单个实例</li>
-<li>用group解析匹配：小括号分组， 访问单个组匹配的字串，用 <code>match</code>对象的<code>groups()</code>方法，有几个括号则该方法就返回有几个元素的tuple，分别对应该括号里匹配的字符串.命名组：在常规的正则表达式中加入<code>?P&lt;name&gt;</code>如 </li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">text = <span class="string">'This is some text -- with punctuation'</span></div><div class="line">pattern = re.compile(<span class="string">r'(\bt\w+)\W+(\w+)'</span>)<span class="comment">#t开头单词，中间有非单词元素，再以单词结尾</span></div><div class="line">match = pattern.search(text)</div><div class="line">match.groups()<span class="comment">##返回('text', 'with')</span></div><div class="line"><span class="comment">#～～～～～～～～～～～～～～～～～～～～～</span></div><div class="line">match.group(<span class="number">0</span>)<span class="comment"># 或 match.group() 返回整个re匹配的字串'text -- with'</span></div><div class="line">match.group(<span class="number">1</span>)<span class="comment">#  'text'</span></div><div class="line">match.group(<span class="number">2</span>) <span class="comment">#  'with'</span></div><div class="line">pattern = re.compile(<span class="string">r'(?P&lt;fuck&gt;\bt\w+)\W+(?P&lt;suck&gt;\w+)'</span>)</div><div class="line">mat = pattern.search(text)</div><div class="line">mat.groupdict() <span class="comment">##{'fuck': 'text', 'suck': 'with'}返回带组名的字典</span></div><div class="line"><span class="comment">#～～～～～分组嵌套～～～～～～～～～～～～～～～～～～</span></div></pre></td></tr></table></figure>
+		<p>标题可能起得晦涩难懂，但是我在开发的时候遇到这样一个场景：model字段里有个字段保存的是一张图片的url，在model被保存，也就是一条记录被创建或修改时去下载该图片，并保存。下载图片这个过程相对就比较漫长了。所以为了节约时间、流量，需要在该字段更新的时候下载图片，而在该字段没有变化的时候不去下载图片。<br>经过网上查资料，知道可以重载模型的save方法，自定义保存的规则，利用这个特性就可以大作文章了，直接上代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">save</span><span class="params">(self,*args,**kwargs)</span>:</span></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        old_obj = Account.objects.get(id=self.id)<span class="comment">#判断数据库中是否有值,Account为账户列表</span></div><div class="line">        <span class="keyword">if</span> self.avatar !=old_obj.avatar:<span class="comment">#若现头像与原用户头像不等，说明有更新</span></div><div class="line">	    download(self.avatar,path)<span class="comment">#下载图片，保存到path路径</span></div><div class="line">	    remove(old_path)<span class="comment">#删除原路径的图片</span></div><div class="line">        <span class="comment"># other logic</span></div><div class="line">    <span class="keyword">except</span> Account.DoesNotExist:</div><div class="line">        download(self.avatar,path)<span class="comment">#若不存在该账户，则根据图像地址下载该图片</span></div><div class="line"></div><div class="line">    <span class="keyword">finally</span>:</div><div class="line">        super(Account,self).save(*args,**kwargs)<span class="comment">#最重要的一步，调用基类的save方法，存入 数据库</span></div></pre></td></tr></table></figure>
 
+<p>当然网上还有其他的方法，如<a href="http://stackoverflow.com/questions/4269605/django-override-save-for-model" target="_blank" rel="external">stackoverflow上</a>，但我水平有限，暂时没有看懂这种方法，改日研究一下，争取弄懂它！</p>
   
 	</div>
 		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/django-save/">django,save</a>
+  </div>
 
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2014/12/09/python-regular-expression/" data-title="python regular expression(1) | ljcbeyond&#39;s blog" data-tsina="null" class="share clearfix">
+  <div data-url="http://yoursite.com/2014/12/11/django-save-a-when-it-s-needed/" data-title="django save a model when it&#39;s needed | ljcbeyond&#39;s blog" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -126,19 +113,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/12/11/django-save-a-when-it-s-needed/" title="django save a model when it&#39;s needed">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  django save a model when it&#39;s needed</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2014/11/22/djano-model/"  title="djano model">
+<a href="/2014/12/09/python-regular-expression/"  title="python regular expression(1)">
  <strong>NEXT:</strong><br/> 
- <span>djano model
+ <span>python regular expression(1)
 </span>
 </a>
 </div>
@@ -151,7 +130,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#python_regular_expression(1)"><span class="toc-number">1.</span> <span class="toc-text">python regular expression(1)</span></a></li></ol>
+  
   </div>
 
 <div id="asidepart">
